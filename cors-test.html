@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test</title>
+</head>
+<body>
+    <h1>CORS Test</h1>
+    <button onclick="testRequest()">Test API Request</button>
+    <pre id="result" style="background: #f0f0f0; padding: 10px; margin-top: 20px; font-size: 12px;"></pre>
+
+    <script>
+        async function testRequest() {
+            const resultEl = document.getElementById('result');
+            resultEl.textContent = 'Testing...\n';
+            
+            try {
+                console.log('Sending request to http://localhost/Legal/backend/api/lawyers');
+                const response = await fetch('http://localhost/Legal/backend/api/lawyers', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                resultEl.textContent += `Status: ${response.status} ${response.statusText}\n\n`;
+                resultEl.textContent += 'Response Headers:\n';
+                for (const [key, value] of response.headers.entries()) {
+                    resultEl.textContent += `  ${key}: ${value}\n`;
+                }
+                
+                const data = await response.json();
+                resultEl.textContent += `\nResponse Data (first item):\n${JSON.stringify(data[0] || data.data[0], null, 2)}`;
+                
+            } catch (error) {
+                resultEl.textContent += `ERROR: ${error.message}\n`;
+                resultEl.textContent += `\nStack: ${error.stack}`;
+                console.error('Full error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
